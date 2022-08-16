@@ -179,13 +179,13 @@ def arrange_daily_report(dirpath: str, outxlsx: str, outxlsx1: str,show_days:int
                           index=['优Ⅲ', 'Ⅳ', 'Ⅴ', '异常', '优Ⅲ率', 'Ⅳ率', 'Ⅴ率'])
         TP_count[TP_class.columns.values[col]] = pd.concat([TP_class[TP_class.columns.values[col]], count])
 
-    O2_near7 = O2_count.iloc[0:14, -7:]
+    O2_near7 = O2_count.iloc[0:14, -14:]
     O2_station_near7 = ((O2_near7 == 'Ⅳ') + (O2_near7 == 'Ⅴ')).sum(axis=1)
-    CODM_near7 = CODM_count.iloc[0:14, -7:]
+    CODM_near7 = CODM_count.iloc[0:14, -14:]
     CODM_station_near7 = ((CODM_near7 == 'Ⅳ') + (CODM_near7 == 'Ⅴ')).sum(axis=1)
-    NH4_near7 = NH4_count.iloc[0:14, -7:]
+    NH4_near7 = NH4_count.iloc[0:14, -14:]
     NH4_station_near7 = ((NH4_near7 == 'Ⅳ') + (NH4_near7 == 'Ⅴ')).sum(axis=1)
-    TP_near7 = TP_count.iloc[0:14, -7:]
+    TP_near7 = TP_count.iloc[0:14, -14:]
     TP_station_near7 = ((TP_near7 == 'Ⅳ') + (TP_near7 == 'Ⅴ')).sum(axis=1)
     station_near7 = pd.concat([O2_station_near7, CODM_station_near7, NH4_station_near7, TP_station_near7], axis=1)
     station_near7.columns = ['溶解氧', '高锰酸盐指数', '氨氮', '总磷']
@@ -239,14 +239,15 @@ def show_attention(begin_time, idx, parameter,show_days):
 
 
 if __name__ == '__main__':
-    dirpath = r'E:\Zph\0704常熟日报\1排查资料\日报'
+    dirpath = r'E:\Zph\0704常熟日报\1排查资料\待分析日报'
     outxlsx = r'E:\Zph\0704常熟日报\1排查资料\日报汇总.xlsx'
     outxlsx1 = r'E:\Zph\0704常熟日报\1排查资料\非优Ⅲ断面次数.csv'
-    attention = {'昆承湖心（省站）': ['CODM', 'TP']
-                 #'张桥（省站）': ['O2', 'TP'],
-                 #'大义光明村(省站)':['O2','TP','CODM']
+    attention = {#'耿泾闸口': ['O2','CODM','NH4','TP'],
+                 #'金泾闸': ['O2'],
+                 #'沈家市（省站）':['TP'],
+                 '昆承湖心（省站）': ['O2','CODM','NH4','TP']
                  }
-    show_days = 7  #出图显示近n天的数据
+    show_days = 14  #出图显示近n天的数据
 
 
     O2_pd_near7, CODM_pd_near7, NH4_pd_near7, TP_pd_near7 = arrange_daily_report(dirpath, outxlsx, outxlsx1,show_days)
@@ -257,7 +258,7 @@ if __name__ == '__main__':
         for target in attention[station]:
             if target == 'O2':
                 idx = list(map(float, O2_pd_near7.loc[station]))
-                parameter = [20, 7.5, 6, 5, 3, 2, 0, 'DO (mg/L)']
+                parameter = [50, 7.5, 6, 5, 3, 2, 0, 'DO (mg/L)']
                 show_attention(begin_time, idx, parameter,show_days)
             elif target == 'CODM':
                 idx = list(map(float, CODM_pd_near7.loc[station]))
@@ -276,4 +277,3 @@ if __name__ == '__main__':
                 show_attention(begin_time, idx, parameter,show_days)
             else:
                 print('error')
-# over
